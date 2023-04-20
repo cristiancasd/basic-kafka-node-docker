@@ -23,7 +23,6 @@ export async function disconnectFromKafka() {
 const topics = ["message_created"] as const;
 
 export async function sendMessage(topic: typeof topics[number], message: any) {
-  console.log('voy a enviar mensaje ', {topic, messages: [{ value: message }],})
   return producer.send({
     topic,
     messages: [{ value: message }],

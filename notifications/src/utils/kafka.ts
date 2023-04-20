@@ -1,5 +1,4 @@
 import { Kafka, KafkaMessage } from "kafkajs";
-import { Message } from '../../../../start/messages/src/models/message.model';
 
 const brokers = ["0.0.0.0:9092"];
 
@@ -23,7 +22,7 @@ const topics = ["message_created"] as const;
 
 
 function messageCreatedHandler(data:string) {
-  console.log("TENAZ Got a new message", JSON.stringify(data, null, 2));
+  console.log("Estoy dentro de la función de: ", JSON.stringify(data, null, 2));
 }
 
 //const topicToSubscribe: Record<typeof topics[number], Function> = {
@@ -44,6 +43,8 @@ export async function connectConsumer() {
   console.log("Connected to consumer");
 
   for (let i = 0; i < topics.length; i++) {
+    console.log("subscribing topic: ", topics[i]);
+
     await consumer.subscribe({
       topic: topics[i],
       fromBeginning: true,
@@ -52,16 +53,10 @@ export async function connectConsumer() {
   
   await consumer.run({
     eachMessage: async (input:InputKafka) => {
-      if (!input.message || !input.message.value) {
-        return;
-      }
-
+      if (!input.message || !input.message.value) return;
       const data = JSON.parse(input.message.value.toString());
       const handler = topicToSubscribe[input.topic];
-
-      console.log('handler ... ', handler)
       if (handler) {
-        console.log('estoy en el condicional')
         handler(data);
       }
     },

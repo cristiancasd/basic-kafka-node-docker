@@ -1,32 +1,33 @@
-//import { connectToDb } from "./utils/db";
 import { connectProducer, disconnectFromKafka } from "./utils/kafka";
 import { createServer } from "./utils/server";
-import mongoose from 'mongoose';
 
 
 async function gracefulShutdown(app: Awaited<ReturnType<typeof createServer>>) {
   console.log("Graceful shutdown");
-
   await app.close();
   await disconnectFromKafka(); 
-
   process.exit(0);
 }
 
 async function main() {
   const app = createServer(); 
 
-
-  //await connectToDb();
-
-
-  try {
-    await connectProducer();
-    console.log('Connected to producer');
-  } catch (err) {
-    console.error(err);
-    console.log('error to conect with producer');
+  let wrongConnection = true;
+  while (wrongConnection) {
+    try {
+      await connectProducer();
+      wrongConnection = false;
+    } catch (err) {
+      console.log('kafka ... error to conect with producer');
+      await sleep(3000);
+      function sleep(ms:number) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        });
+      }
+    } 
   }
+
 
 
   app.listen({
