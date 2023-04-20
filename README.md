@@ -9,19 +9,39 @@
 ### You will need
 1. Docker
 2. Node.js
-### Starting Kafka & Conductor
-Follow the instructions in the conduktor folder
 
+## Before to use
 
-## Install dependencies
-`yarn add kafkajs`
+### Starting Kafka 
+``docker-compose up -d``
 
-## What will you learn?
-* Setup a Kafka cluster for local development with Docker
-* Connect a producer to the cluster
-* Connect a consumer to the cluster
-* Graceful shutdown - disconnect the producer and consumer from the cluster
-* Using Conduktor to view & manage the cluster
+### Install dependencies message project
+`cd message` `npm install`
+
+### Install dependencies notifications project
+`cd notification` `npm install`
+
+## Ready to use
+
+### run the projects
+`cd message` `npm start`
+`cd notification` `npm start`
+
+> You must be shure that have in console 'Connected to producer' and 'Connected to consumer'
+
+### Test with Postman 
+
+#### Realice a post to the message service with the text, this service "save" the info and sending a notification to kafka
+``
+http://localhost:3000/api/v1/messages
+``
+``
+{
+  "text": "Prueba"
+}
+``
+#### you will see the message in the Notification service console 
+
 
 
 ## Why Kafka?
